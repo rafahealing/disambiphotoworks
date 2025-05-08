@@ -10,7 +10,7 @@ use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\BookingExport;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
