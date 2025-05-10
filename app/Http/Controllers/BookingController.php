@@ -27,17 +27,15 @@ class BookingController extends Controller
 
     public function showBookingForm()
     {
-        $availableDates = [
-            '2025-04-25',
-            '2025-04-27',
-            '2025-04-29',
-        ];
+
+        $bookedDates = Booking::select('tanggal')
+            ->where('tanggal', '>', Carbon::today())
+            ->pluck('tanggal')
+            ->toArray();
 
         $user = Auth::user();
 
-
-
-        return view('user.booking', compact('availableDates', 'user'));
+        return view('user.booking', compact('bookedDates', 'user'));
     }
 
     public function showReceipt()
@@ -158,7 +156,7 @@ class BookingController extends Controller
             ->orderBy('tanggal', 'desc')
             ->pluck('tanggal');
 
-            $statusList = Booking::select('status')
+        $statusList = Booking::select('status')
             ->distinct()
             ->pluck('status')
             ->map(function ($status) {
@@ -226,6 +224,4 @@ class BookingController extends Controller
 
         return view('admin.admin-booking', compact('bookings', 'tanggalList', 'statusList'));
     }
-
-
 }
