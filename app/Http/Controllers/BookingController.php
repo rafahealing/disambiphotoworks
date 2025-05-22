@@ -112,8 +112,6 @@ class BookingController extends Controller
 
         // return response()->json([$request->all()]);
 
-
-
         $request_custom = $request->request_custom ?? '-';
 
         $booking = Booking::create([

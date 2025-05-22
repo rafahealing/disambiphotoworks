@@ -190,7 +190,6 @@
         </div>
 
         <div class="grid grid-cols-5 sm:grid-cols-7 gap-3 mt-4" id="tanggalGrid"></div>
-        <input type="hidden" id="tanggalInput">
 
         <!-- Keterangan Warna -->
         <div class="mt-6 flex flex-wrap gap-4 text-sm text-gray-700">

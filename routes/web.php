@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\AdminController; // Ensure this controller exists in the specified namespace
+use App\Http\Controllers\AdminController;
 
 // Homepage halaman utama
 Route::get('/', function () {
@@ -12,7 +12,7 @@ Route::get('/', function () {
 })->name('home');
 
 // Sign Up (Only for guests, if already logged in, redirect)
-Route::prefix('user')->middleware('guest')->group(function () {
+Route::middleware('guest')->group(function () {
     Route::get('signup', fn() => view('user.signup'))->name('signup');
     Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('register', [RegisterController::class, 'register'])->name('register.post');
@@ -20,14 +20,13 @@ Route::prefix('user')->middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('login', [LoginController::class, 'login']);
 });
-Route::post('user/logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 // wedding
 Route::get('/wedding', function () {
     return view('user/wedding');
 })->name('wedding');
-
 
 // Menampilkan form booking
 Route::get('/user/booking', [BookingController::class, 'showBookingForm'])->name('user.booking')->middleware('auth');
@@ -35,32 +34,21 @@ Route::get('/user/booking', [BookingController::class, 'showBookingForm'])->name
 // Form submit booking
 Route::post('/booking/submit', [BookingController::class, 'submitBooking'])->name('booking.submit');
 
-
 // Menampilkan halaman receipt setelah submit
+Route::get('/user/receipt', [BookingController::class, 'showReceipt'])->name('receipt')->middleware('auth');
 
-Route::get('/user/receipt', [BookingController::class, 'showReceipt'])->name('receipt');
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
+    Route::get('/', [BookingController::class, 'showAdminBookings'])->name('admin');
 
+    Route::put('/bookings/{id}', [BookingController::class, 'update']);
 
+    Route::get('/booking/export-excel', [BookingController::class, 'exportExcel'])->name('booking.export.excel');
 
-// Route untuk halaman admin yang menampilkan daftar booking
-Route::get('/admin', [BookingController::class, 'showAdminBookings'])->name('admin');
+    Route::get('/booking/export/pdf', [BookingController::class, 'exportPdf'])->name('booking.export.pdf');
 
-Route::put('/admin/bookings/{id}', [BookingController::class, 'update']);
-
-
-Route::get('/admin/booking/export-excel', [BookingController::class, 'exportExcel'])->name('booking.export.excel');
-
-Route::get('/admin/booking/export/pdf', [BookingController::class, 'exportPdf'])->name('booking.export.pdf');
-
-Route::get('/admin/booking/invoice/{id}', [BookingController::class, 'invoice'])->name('booking.invoice');
-
-
-
-
-
-
-
+    Route::get('/booking/invoice/{id}', [BookingController::class, 'invoice'])->name('booking.invoice');
+});
 
 // wedding-detail
 Route::get('/detail/wedding-detail-an', function () {
@@ -102,10 +90,3 @@ Route::get('/detail/wedding-detail-sf', function () {
 Route::get('/detail/wedding-detail-ai', function () {
     return view('detail/wedding-detail-ai');
 })->name('detail/wedding-detail-ai');
-
-
-
-
-
-
-
