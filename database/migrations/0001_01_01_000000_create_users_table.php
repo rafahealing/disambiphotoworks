@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('phone')->unique()->after('name');
             $table->timestamp('phone_verified_at')->nullable()->after('phone');
             $table->string('password');
+            $table->string('role')->default('user');
             $table->rememberToken();
             $table->timestamps();
         });
